@@ -44,6 +44,22 @@ public class EmployeeService {
         return modelMapper.map(emp, EmployeeDTO.class);
     }
 
+    public EmployeeDTO updateEmployee(Long id, EmployeeDTO dto) {
+        Employee existingEmp = employeeRepository.findById(id).orElse(null);
+        if (existingEmp != null) {
+            existingEmp.setFirstName(dto.getFirstName());
+            existingEmp.setLastName(dto.getLastName());
+            existingEmp.setEmail(dto.getEmail());
+            existingEmp.setPhone(dto.getPhone());
+            existingEmp.setHireDate(dto.getHireDate());
+            existingEmp.setDepartment(departmentRepository.findById(dto.getDeptId()).orElse(null));
+            existingEmp.setDesignation(designationRepository.findById(dto.getDesigId()).orElse(null));
+            employeeRepository.save(existingEmp);
+            return modelMapper.map(existingEmp, EmployeeDTO.class);
+        }
+        return null;
+    }
+
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
     }
