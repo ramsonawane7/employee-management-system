@@ -37,6 +37,6 @@ public class EmployeeController {
     @PutMapping("/{id}")
     public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO dto) {
         dto.setEmpId(id);
-        return employeeService.addEmployee(dto);
+        return employeeService.updateEmployee(id,dto);
     }
 }
