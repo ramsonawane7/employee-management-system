@@ -41,4 +41,14 @@ public class DepartmentService {
     public void deleteDepartment(Long id) {
         departmentRepository.deleteById(id);
     }
+
+    public DepartmentDTO updateDepartment(Long id, DepartmentDTO dto) {
+        return departmentRepository.findById(id)
+                .map(existingDept -> {
+                    existingDept.setDeptName(dto.getDeptName());
+                    departmentRepository.save(existingDept);
+                    return modelMapper.map(existingDept, DepartmentDTO.class);
+                })
+                .orElse(null);
+    }
 }

@@ -41,4 +41,14 @@ public class DesignationService {
     public void deleteDesignation(Long id) {
         designationRepository.deleteById(id);
     }
+
+    public DesignationDTO updateDesignation(Long id, DesignationDTO dto) {
+        return designationRepository.findById(id)
+                .map(existingDesig -> {
+                    existingDesig.setDesigName(dto.getDesigName());
+                    designationRepository.save(existingDesig);
+                    return modelMapper.map(existingDesig, DesignationDTO.class);
+                })
+                .orElse(null);
+    }
 }
