@@ -21,6 +21,7 @@ public class Employee {
 
     private String phone;
     private Date hireDate;
+    
 
     @ManyToOne
     @JoinColumn(name = "dept_id")
