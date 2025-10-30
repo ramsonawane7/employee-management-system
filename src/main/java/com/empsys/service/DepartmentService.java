@@ -5,6 +5,7 @@ import com.empsys.entity.Department;
 import com.empsys.repository.DepartmentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class DepartmentService {
     private ModelMapper modelMapper;
 
     public List<DepartmentDTO> getAllDepartments() {
-        return departmentRepository.findAll()
+        return departmentRepository.findAll(Sort.by(Sort.Direction.ASC, "deptId"))
                 .stream()
                 .map(dept -> modelMapper.map(dept, DepartmentDTO.class))
                 .collect(Collectors.toList());

@@ -5,6 +5,7 @@ import com.empsys.entity.Designation;
 import com.empsys.repository.DesignationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ public class DesignationService {
     private ModelMapper modelMapper;
 
     public List<DesignationDTO> getAllDesignations() {
-        return designationRepository.findAll()
+        return designationRepository.findAll(Sort.by(Sort.Direction.ASC, "desigId"))
                 .stream()
                 .map(desig -> modelMapper.map(desig, DesignationDTO.class))
                 .collect(Collectors.toList());
