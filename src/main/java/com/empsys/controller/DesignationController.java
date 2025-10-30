@@ -33,4 +33,10 @@ public class DesignationController {
     public void deleteDesignation(@PathVariable Long id) {
         designationService.deleteDesignation(id);
     }
+
+    @PutMapping("/{id}")
+    public DesignationDTO updateDesignation(@PathVariable Long id, @RequestBody DesignationDTO dto) {
+        dto.setDesigId(id);
+        return designationService.updateDesignation(id, dto);
+    }
 }
