@@ -5,6 +5,9 @@ import com.empsys.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api/employees")
@@ -39,4 +42,10 @@ public class EmployeeController {
         dto.setEmpId(id);
         return employeeService.updateEmployee(id,dto);
     }
+
+    @GetMapping("/search")
+    public List<EmployeeDTO> searchEmployees(@RequestParam String keyword) {
+        return employeeService.searchEmployees(keyword);
+    }
+    
 }

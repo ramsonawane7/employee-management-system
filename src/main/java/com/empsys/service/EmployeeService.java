@@ -87,4 +87,16 @@ public class EmployeeService {
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
     }
+
+    public List<EmployeeDTO> searchEmployees(String keyword) {
+        return employeeRepository.searchEmployees(keyword)
+                .stream()
+                .map(emp -> {
+                    EmployeeDTO dto = modelMapper.map(emp, EmployeeDTO.class);
+                    dto.setDeptId(emp.getDepartment() != null ? emp.getDepartment().getDeptId() : null);
+                    dto.setDesigId(emp.getDesignation() != null ? emp.getDesignation().getDesigId() : null);
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }
