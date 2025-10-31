@@ -70,7 +70,7 @@ jobs:
             echo "📁 Latest build: $LATEST_JAR"
 
             # Update symlink
-            ln -sf "$LATEST_JAR" symlink/ems.jar
+            ln -sf "/home/ubuntu/services/backend/$LATEST_JAR" /home/ubuntu/services/backend/symlink/ems.jar
             echo "✅ Symlink updated to $LATEST_JAR"
 
             # Keep only 5 latest JARs
