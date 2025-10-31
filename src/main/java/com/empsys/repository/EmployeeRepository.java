@@ -4,8 +4,8 @@ import com.empsys.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
@@ -17,5 +17,5 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
            "LOWER(e.phone) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
            "LOWER(e.department.deptName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
            "LOWER(e.designation.desigName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
-    List<Employee> searchEmployees(String keyword);
+    Page<Employee> searchEmployees(String keyword, Pageable pageable);
 }

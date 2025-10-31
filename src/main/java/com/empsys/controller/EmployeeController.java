@@ -4,10 +4,7 @@ import com.empsys.dto.EmployeeDTO;
 import com.empsys.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -17,9 +14,12 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    // ✅ Get all employees with pagination
     @GetMapping
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public Page<EmployeeDTO> getAllEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return employeeService.getAllEmployees(page, size);
     }
 
     @GetMapping("/{id}")
@@ -40,12 +40,15 @@ public class EmployeeController {
     @PutMapping("/{id}")
     public EmployeeDTO updateEmployee(@PathVariable Long id, @RequestBody EmployeeDTO dto) {
         dto.setEmpId(id);
-        return employeeService.updateEmployee(id,dto);
+        return employeeService.updateEmployee(id, dto);
     }
 
+    // ✅ Search employees with pagination
     @GetMapping("/search")
-    public List<EmployeeDTO> searchEmployees(@RequestParam String keyword) {
-        return employeeService.searchEmployees(keyword);
+    public Page<EmployeeDTO> searchEmployees(
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return employeeService.searchEmployees(keyword, page, size);
     }
-    
 }

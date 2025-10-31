@@ -8,8 +8,11 @@ import com.empsys.repository.DesignationRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 @Service
 public class EmployeeService {
 
@@ -25,16 +28,16 @@ public class EmployeeService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public List<EmployeeDTO> getAllEmployees() {
-        return employeeRepository.findAll()
-                .stream()
+    //Get All Employees with Pagination
+    public Page<EmployeeDTO> getAllEmployees(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("empId").ascending());
+        return employeeRepository.findAll(pageable)
                 .map(emp -> {
                     EmployeeDTO dto = modelMapper.map(emp, EmployeeDTO.class);
                     dto.setDeptId(emp.getDepartment() != null ? emp.getDepartment().getDeptId() : null);
                     dto.setDesigId(emp.getDesignation() != null ? emp.getDesignation().getDesigId() : null);
                     return dto;
-                })
-                .collect(Collectors.toList());
+                });
     }
 
     public EmployeeDTO getEmployeeById(Long id) {
@@ -50,11 +53,8 @@ public class EmployeeService {
 
     public EmployeeDTO addEmployee(EmployeeDTO dto) {
         Employee emp = modelMapper.map(dto, Employee.class);
-
-        // ✅ Set Department & Designation before saving
         emp.setDepartment(departmentRepository.findById(dto.getDeptId()).orElse(null));
         emp.setDesignation(designationRepository.findById(dto.getDesigId()).orElse(null));
-
         employeeRepository.save(emp);
 
         EmployeeDTO result = modelMapper.map(emp, EmployeeDTO.class);
@@ -88,15 +88,15 @@ public class EmployeeService {
         employeeRepository.deleteById(id);
     }
 
-    public List<EmployeeDTO> searchEmployees(String keyword) {
-        return employeeRepository.searchEmployees(keyword)
-                .stream()
+    //Search Employees with Pagination
+    public Page<EmployeeDTO> searchEmployees(String keyword, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("empId").ascending());
+        return employeeRepository.searchEmployees(keyword, pageable)
                 .map(emp -> {
                     EmployeeDTO dto = modelMapper.map(emp, EmployeeDTO.class);
                     dto.setDeptId(emp.getDepartment() != null ? emp.getDepartment().getDeptId() : null);
                     dto.setDesigId(emp.getDesignation() != null ? emp.getDesignation().getDesigId() : null);
                     return dto;
-                })
-                .collect(Collectors.toList());
+                });
     }
 }
