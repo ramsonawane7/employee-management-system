@@ -1,0 +1,64 @@
+name: Build & Deploy EMS Service (Dev)
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'deploy-dev')
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up JDK 17 and Maven
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3️⃣ Auto version + build JAR
+      - name: Auto-increment version and build
+        id: build
+        run: |
+          # Extract current version pattern from existing pom.xml or default
+          BASE_VERSION="1.0.0"
+          BUILD_NUMBER=$(date +%s)   # unique timestamp for versioning
+          VERSION="v1.${GITHUB_RUN_NUMBER}.${BUILD_NUMBER}"
+          
+          echo "Building version: ems-${VERSION}.jar"
+          mvn clean package -DskipTests
+          
+          # Rename the JAR file
+          mv target/*.jar target/ems-${VERSION}.jar
+          echo "JAR_FILE=target/ems-${VERSION}.jar" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
+      # 4️⃣ Start SSH agent for deployment
+      - name: Setup SSH Agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # 5️⃣ Copy JAR to Ubuntu server
+      - name: Upload JAR to server
+        run: |
+          scp -o StrictHostKeyChecking=no ${{ env.JAR_FILE }} \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/home/ubuntu/services/backend/versions/
+
+      # 6️⃣ Update symlink and restart service
+      - name: Update symlink and restart service
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            set -e
+            cd /home/ubuntu/services/backend
+            LATEST_JAR=$(ls -t versions/ems-v1.*.jar | head -n 1)
+            ln -sf "$LATEST_JAR" symlink/ems.jar
+            sudo systemctl daemon-reload
+            sudo systemctl restart ems.service
+            echo "✅ EMS service restarted with version: $LATEST_JAR"
+          EOF
