@@ -15,6 +15,8 @@ public class EmployeeDTO {
     private Date hireDate;
     private Long deptId;
     private Long desigId;
+    
+    
 	public Long getEmpId() {
 		return empId;
 	}

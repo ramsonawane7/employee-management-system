@@ -51,4 +51,9 @@ public class DesignationService {
                 })
                 .orElse(null);
     }
+    
+  //count employees
+    public long countDesignation() {
+    	return designationRepository.count();
+    }
 }

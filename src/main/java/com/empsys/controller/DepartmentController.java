@@ -39,4 +39,10 @@ public class DepartmentController {
         dto.setDeptId(id);
         return departmentService.updateDepartment(id, dto);
     }
+    
+    //count employees apis
+    @GetMapping("/count")
+    public long countEmployees() {
+    	return departmentService.countDepartment();
+    }
 }

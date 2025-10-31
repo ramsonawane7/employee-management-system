@@ -39,4 +39,10 @@ public class DesignationController {
         dto.setDesigId(id);
         return designationService.updateDesignation(id, dto);
     }
+    
+    //count employees apis
+    @GetMapping("/count")
+    public long countDesignation() {
+    	return designationService.countDesignation();
+    }
 }

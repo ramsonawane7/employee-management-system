@@ -43,12 +43,18 @@ public class EmployeeController {
         return employeeService.updateEmployee(id, dto);
     }
 
-    // ✅ Search employees with pagination
+    //  Search employees with pagination
     @GetMapping("/search")
     public Page<EmployeeDTO> searchEmployees(
             @RequestParam String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return employeeService.searchEmployees(keyword, page, size);
+    }
+    
+    //count employees apis
+    @GetMapping("/count")
+    public long countEmployees() {
+    	return employeeService.countEmployee();
     }
 }

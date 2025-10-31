@@ -99,4 +99,11 @@ public class EmployeeService {
                     return dto;
                 });
     }
+    
+    //count employees
+    public long countEmployee() {
+    	return employeeRepository.count();
+    }
+    
+    
 }

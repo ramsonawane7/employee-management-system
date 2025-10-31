@@ -51,4 +51,8 @@ public class DepartmentService {
                 })
                 .orElse(null);
     }
+    
+    public long countDepartment() {
+    	return departmentRepository.count();
+    }
 }
