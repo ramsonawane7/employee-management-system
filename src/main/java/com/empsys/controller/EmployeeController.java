@@ -14,7 +14,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
-    // ✅ Get all employees with pagination
+    //  Get all employees with pagination
     @GetMapping
     public Page<EmployeeDTO> getAllEmployees(
             @RequestParam(defaultValue = "0") int page,
